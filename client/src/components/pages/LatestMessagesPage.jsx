@@ -3,6 +3,7 @@ import { Button, Col, Row } from 'reactstrap';
 import MessageCard from '../ui/MessageCard';
 import AddMessageForm from '../ui/AddMessageForm';
 import axios from 'axios';
+import axiosInstance from '../../service/axiosInstance';
 
 export default function LatestMessagesPage() {
   const [messages, setMessages] = useState([]);
@@ -17,7 +18,7 @@ export default function LatestMessagesPage() {
     console.log({ dataFromForm });
     // Отправить данные на бекенд
     try {
-      const response = await axios.post('/api/messages', dataFromForm);
+      const response = await axiosInstance.post('/messages', dataFromForm);
       const newMessage = response.data; // Получили новые данные с бека
       setMessages((prev) => [newMessage, ...prev]); // Отобразили их
     } catch (error) {
@@ -27,14 +28,13 @@ export default function LatestMessagesPage() {
   };
 
   useEffect(() => {
-    fetch('/api/messages')
-      .then((res) => res.json())
-      .then((data) => setMessages(data))
+    axiosInstance('/messages')
+      .then((res) => setMessages(res.data))
       .catch(console.log);
   }, []);
 
   const deleteHandler = async (messageId) => {
-    const response = await axios.delete(`/api/messages/${messageId}`);
+    const response = await axiosInstance.delete(`/messages/${messageId}`);
     if (response.status === 200) {
       setMessages((prev) => prev.filter((message) => message.id !== messageId));
     }

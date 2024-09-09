@@ -5,7 +5,7 @@ import { Button, Card, CardBody, CardHeader, CardText } from 'reactstrap';
 export default function MessageCard({ message, deleteHandler }) {
   return (
     <Card className="my-2">
-      <CardHeader>{message.signature}</CardHeader>
+      <CardHeader>{message.authorId || 'DELETED'}</CardHeader>
       <CardBody>
         {/* <CardTitle tag="h5">Special Title Treatment</CardTitle> */}
         <CardText>{message.text}</CardText>

@@ -5,10 +5,10 @@ const { Message } = require('../models');
 module.exports = {
   async up(queryInterface, Sequelize) {
     await Message.bulkCreate([
-      { text: 'Всем привет в этом чатике', signature: 'Chickenkiller' },
-      { text: 'Привет, как дела?', signature: 'Вася' },
-      { text: 'Что нового?', signature: 'Петя' },
-      { text: 'Нормально', signature: 'Вася' },
+      { text: 'Всем привет в этом чатике', authorId: null },
+      { text: 'Привет, как дела?', authorId: null },
+      { text: 'Что нового?', authorId: null },
+      { text: 'Нормально', authorId: null },
     ]);
   },
 

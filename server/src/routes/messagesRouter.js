@@ -1,5 +1,6 @@
 const express = require('express');
 const { Message } = require('../../db/models');
+const verifyAccessToken = require('../middlewares/verifyAccessToken');
 const messagesRouter = express.Router();
 
 messagesRouter
@@ -15,14 +16,14 @@ messagesRouter
         .json({ message: error.message, text: 'Ошибка получения всех сообщений' });
     }
   })
-  .post(async (req, res) => {
+  .post(verifyAccessToken, async (req, res) => {
     try {
-      const { signature, text } = req.body;
+      const { text } = req.body;
       if (!text) {
         return res.status(400).json({ text: 'Текст сообщения не может быть пустым' });
       }
       const newMessage = await Message.create({
-        signature: !signature ? 'Аноним' : signature,
+        authorId: res.locals.user.id,
         text,
       });
       res.json(newMessage);
@@ -35,24 +36,29 @@ messagesRouter
   });
 
 // DELETE /api/messages/5
-messagesRouter.route('/:messageId').delete(async (req, res) => {
-  try {
-    const { messageId } = req.params;
-    await Message.destroy({ where: { id: messageId } });
-    res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message, text: 'Ошибка удаления сообщения' });
-  }
-}).get(async (req, res) => {
-  try {
-    const { messageId } = req.params;
-    const message = await Message.findOne({ where: { id: messageId } });
-    res.json(message);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message, text: 'Ошибка получения сообщения' });
-  }
-});
+messagesRouter
+  .route('/:messageId')
+  .delete(verifyAccessToken, async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      await Message.destroy({ where: { id: messageId } });
+      res.sendStatus(200);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error.message, text: 'Ошибка удаления сообщения' });
+    }
+  })
+  .get(async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const message = await Message.findOne({ where: { id: messageId } });
+      res.json(message);
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: error.message, text: 'Ошибка получения сообщения' });
+    }
+  });
 
 module.exports = messagesRouter;
