@@ -25,25 +25,32 @@ export default function NavigationBar({ user, logoutHandler }) {
               Главная
             </NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink className="nav-link" to="/latest">
-              Последние посты
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink className="nav-link" to="/login">
-              Вход
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink className="nav-link" to="/signup">
-              Регистрация
-            </NavLink>
-          </NavItem>
+          {user ? (
+            <NavItem>
+              <NavLink className="nav-link" to="/latest">
+                Последние посты
+              </NavLink>
+            </NavItem>
+          ) : (
+            <>
+              <NavItem>
+                <NavLink className="nav-link" to="/login">
+                  Вход
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className="nav-link" to="/signup">
+                  Регистрация
+                </NavLink>
+              </NavItem>
+            </>
+          )}
+        </Nav>
+        {user && (
           <NavItem>
             <Button onClick={logoutHandler}>Выйти</Button>
           </NavItem>
-        </Nav>
+        )}
       </Collapse>
     </Navbar>
   );

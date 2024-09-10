@@ -12,9 +12,15 @@ export default function SignupPage({ signupHandler }) {
   });
   const changeHandler = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const [signupErr, setSignupErr] = useState(null);
 
   return (
-    <Form onSubmit={(event) => signupHandler(event, formData)}>
+    <Form
+      onSubmit={(event) => {
+        setSignupErr(null);
+        signupHandler(event, formData).catch(setSignupErr);
+      }}
+    >
       <FormGroup>
         <Label for="emailInp">Email</Label>
         <Input
@@ -24,7 +30,9 @@ export default function SignupPage({ signupHandler }) {
           name="email"
           placeholder="Введи email"
           type="email"
+          invalid={!!signupErr}
         />
+        <FormFeedback>Данный email нельзя использовать</FormFeedback>
       </FormGroup>
       <FormGroup>
         <Label for="nameInp">Имя</Label>

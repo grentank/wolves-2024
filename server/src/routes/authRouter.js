@@ -22,7 +22,37 @@ authRouter.post('/signup', async (req, res) => {
       .json({ user, accessToken });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ text: 'Ошибка сервера', message: error.message });
+    return res.status(500).json({ text: 'Ошибка регистрации', message: error.message });
+  }
+});
+
+authRouter.post('/login', async (req, res) => {
+  try {
+    const { password, email } = req.body;
+    const targetUser = await User.findOne({ where: { email } });
+    if (!targetUser) {
+      throw new Error('Неверный email или пароль');
+      //   return res
+      //     .status(400)
+      //     .json({ text: 'Пользователь не найден', message: 'Email not found' });
+    }
+    const isValid = await bcrypt.compare(password, targetUser.hashpass);
+    if (!isValid) {
+      throw new Error('Неверный email или пароль');
+      //   return res
+      //     .status(400)
+      //     .json({ text: 'Неверный пароль', message: 'Invalid password' });
+    }
+
+    const user = targetUser.get();
+    delete user.hashpass;
+    const { accessToken, refreshToken } = generateTokens({ user });
+    return res
+      .cookie('refreshToken', refreshToken, cookieConfig)
+      .json({ user, accessToken });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ text: 'Ошибка входа', message: error.message });
   }
 });
 

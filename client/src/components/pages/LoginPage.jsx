@@ -1,5 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Form } from 'react-router-dom';
+import { Button, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
 
-export default function LoginPage() {
-  return <div>LoginPage</div>;
+export default function LoginPage({ loginHandler }) {
+  const [err, setErr] = useState(null);
+  return (
+    <Form onSubmit={(e) => loginHandler(e).catch(setErr)}>
+      <FormGroup>
+        <Label for="emailInp">Email</Label>
+        <Input id="emailInp" name="email" placeholder="Введи email" type="email" />
+      </FormGroup>
+      <FormGroup>
+        <Label for="pass">Пароль</Label>
+        <Input
+          id="pass"
+          name="password"
+          placeholder="Пароль"
+          type="password"
+          invalid={!!err}
+        />
+        <FormFeedback>Неверный пароль или почта</FormFeedback>
+      </FormGroup>
+      <Button>Submit</Button>
+    </Form>
+  );
 }

@@ -4,10 +4,12 @@ import MessageCard from '../ui/MessageCard';
 import AddMessageForm from '../ui/AddMessageForm';
 import axios from 'axios';
 import axiosInstance from '../../service/axiosInstance';
+import Loader from '../hoc/Loader';
 
-export default function LatestMessagesPage() {
+export default function LatestMessagesPage({ user }) {
   const [messages, setMessages] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const submitHandler = async (event) => {
     event.preventDefault(); // предотвращение перезагрузки страницы
@@ -30,7 +32,8 @@ export default function LatestMessagesPage() {
   useEffect(() => {
     axiosInstance('/messages')
       .then((res) => setMessages(res.data))
-      .catch(console.log);
+      .catch(console.log)
+      .finally(() => setLoading(false));
   }, []);
 
   const deleteHandler = async (messageId) => {
@@ -49,11 +52,13 @@ export default function LatestMessagesPage() {
       </Col>
       <Col xs="8">{showForm && <AddMessageForm submitHandler={submitHandler} />}</Col>
       {/* <Button onClick={() => setCounter((p) => p + 1)}>Счётчик {counter}</Button> */}
-      {messages.map((message) => (
-        <Col xs="12" key={message.id}>
-          <MessageCard message={message} deleteHandler={deleteHandler} />
-        </Col>
-      ))}
+      <Loader isLoading={loading}>
+        {messages.map((message) => (
+          <Col xs="12" key={message.id}>
+            <MessageCard user={user} message={message} deleteHandler={deleteHandler} />
+          </Col>
+        ))}
+      </Loader>
     </Row>
   );
 }

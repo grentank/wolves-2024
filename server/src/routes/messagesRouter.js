@@ -1,13 +1,17 @@
 const express = require('express');
-const { Message } = require('../../db/models');
+const { Message, User } = require('../../db/models');
 const verifyAccessToken = require('../middlewares/verifyAccessToken');
+const checkMessageAuthor = require('../middlewares/checkMessageAuthor');
 const messagesRouter = express.Router();
 
 messagesRouter
   .route('/')
   .get(async (req, res) => {
     try {
-      const allMessages = await Message.findAll({ order: [['id', 'DESC']] });
+      const allMessages = await Message.findAll({
+        order: [['id', 'DESC']],
+        include: { model: User, attributes: ['id', 'name', 'email'] },
+      });
       res.json(allMessages);
     } catch (error) {
       console.log(error);
@@ -26,7 +30,11 @@ messagesRouter
         authorId: res.locals.user.id,
         text,
       });
-      res.json(newMessage);
+      const newMessageWithUser = await Message.findOne({
+        where: { id: newMessage.id },
+        include: { model: User, attributes: ['id', 'name', 'email'] },
+      });
+      res.json(newMessageWithUser);
     } catch (error) {
       console.log(error);
       res
@@ -38,7 +46,7 @@ messagesRouter
 // DELETE /api/messages/5
 messagesRouter
   .route('/:messageId')
-  .delete(verifyAccessToken, async (req, res) => {
+  .delete(verifyAccessToken, checkMessageAuthor, async (req, res) => {
     try {
       const { messageId } = req.params;
       await Message.destroy({ where: { id: messageId } });
@@ -48,10 +56,29 @@ messagesRouter
       res.status(500).json({ message: error.message, text: 'Ошибка удаления сообщения' });
     }
   })
+  .patch(verifyAccessToken, checkMessageAuthor, async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const { text } = req.body;
+      const messageWithAuthor = await Message.findOne({
+        where: { id: messageId },
+        include: { model: User, attributes: ['id', 'name', 'email'] },
+      });
+      messageWithAuthor.text = text;
+      await messageWithAuthor.save();
+      return res.json(messageWithAuthor);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error.message, text: 'Ошибка удаления сообщения' });
+    }
+  })
   .get(async (req, res) => {
     try {
       const { messageId } = req.params;
-      const message = await Message.findOne({ where: { id: messageId } });
+      const message = await Message.findOne({
+        where: { id: messageId },
+        include: { model: User, attributes: ['id', 'name', 'email'] },
+      });
       res.json(message);
     } catch (error) {
       console.log(error);

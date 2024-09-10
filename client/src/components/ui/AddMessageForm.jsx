@@ -4,7 +4,7 @@ import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 export default function AddMessageForm({ submitHandler }) {
   return (
     <Form onSubmit={submitHandler}>
-      <FormGroup>
+      {/* <FormGroup>
         <Label for="signature">Кто ты</Label>
         <Input
           id="signature"
@@ -12,7 +12,7 @@ export default function AddMessageForm({ submitHandler }) {
           placeholder="Можно оставить пустым"
           type="text"
         />
-      </FormGroup>
+      </FormGroup> */}
       <FormGroup>
         <Label for="text">Текст сообщения</Label>
         <Input id="text" name="text" type="textarea" placeholder="Напиши что-либо" />

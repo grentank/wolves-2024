@@ -8,6 +8,9 @@ import MessageInfoPage from './components/pages/MessageInfoPage';
 import SignupPage from './components/pages/SignupPage';
 import LoginPage from './components/pages/LoginPage';
 import axiosInstance, { setAccessToken } from './service/axiosInstance';
+import ProtectedRoute from './components/hoc/ProtectedRoute';
+import { Spinner } from 'reactstrap';
+import Loader from './components/hoc/Loader';
 
 function App() {
   const [user, setUser] = useState();
@@ -17,6 +20,14 @@ function App() {
     const res = await axiosInstance.post('/auth/signup', formData);
     const newUser = res.data.user;
     setUser(newUser);
+    setAccessToken(res.data.accessToken);
+  };
+
+  const loginHandler = async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const res = await axiosInstance.post('/auth/login', data);
+    setUser(res.data.user);
     setAccessToken(res.data.accessToken);
   };
 
@@ -44,25 +55,42 @@ function App() {
           element: <MainPage />,
         },
         {
-          path: '/latest',
-          element: <LatestMessagesPage />,
+          element: <ProtectedRoute isAllowed={!!user} redirectPath="/login" />,
+          children: [
+            {
+              path: '/latest',
+              element: <LatestMessagesPage user={user} />,
+            },
+            {
+              path: '/messages/:messageId', // /messages/17, useParams()
+              element: <MessageInfoPage user={user} />,
+            },
+          ],
         },
         {
-          path: '/messages/:messageId', // /messages/17, useParams()
-          element: <MessageInfoPage />,
-        },
-        {
-          path: '/signup',
-          element: <SignupPage signupHandler={signupHandler} />,
-        },
-        {
-          path: '/login',
-          element: <LoginPage />,
+          element: <ProtectedRoute isAllowed={!user} redirectPath="/" />,
+          children: [
+            {
+              path: '/signup',
+              element: <SignupPage signupHandler={signupHandler} />,
+            },
+            {
+              path: '/login',
+              element: <LoginPage loginHandler={loginHandler} />,
+            },
+          ],
         },
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+
+  // if (user === undefined) return <Spinner>Loading...</Spinner>;
+
+  return (
+    <Loader isLoading={user === undefined}>
+      <RouterProvider router={router} />
+    </Loader>
+  );
 }
 
 export default App;
