@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardHeader, CardText } from 'reactstrap';
 import CrossIcon from './icons/CrossIcon';
+import AuthContext from '../../contexts/authContext';
 
-export default function MessageCard({ message, deleteHandler, user }) {
+export default function MessageCard({ message, deleteHandler }) {
+  const { user } = useContext(AuthContext);
+
   return (
     <Card className="my-2">
       <CardHeader className="d-flex justify-content-between align-items-center">

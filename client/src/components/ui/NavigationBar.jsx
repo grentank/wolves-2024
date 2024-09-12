@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Button,
@@ -9,8 +9,10 @@ import {
   NavbarToggler,
   NavItem,
 } from 'reactstrap';
+import AuthContext from '../../contexts/authContext';
 
-export default function NavigationBar({ user, logoutHandler }) {
+export default function NavigationBar() {
+  const { user, logoutHandler } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   return (
     <Navbar className="my-2 navbar-expand-md" color="dark" dark>

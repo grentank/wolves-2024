@@ -1,35 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Col, Input, Row } from 'reactstrap';
 import Loader from '../hoc/Loader';
-import axiosInstance from '../../service/axiosInstance';
+import useOneMessage from '../../hooks/useOneMessage';
+import AuthContext from '../../contexts/authContext';
 
-export default function MessageInfoPage({ user }) {
+export default function MessageInfoPage() {
+  const { user } = useContext(AuthContext);
   const { messageId } = useParams();
-  const [oneMessage, setOneMessage] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState('');
 
-  useEffect(() => {
-    axiosInstance(`/messages/${messageId}`).then((res) => setOneMessage(res.data));
-  }, []);
+  const { oneMessage, createdDate, updatedDate, handleEdit } = useOneMessage(messageId);
 
   useEffect(() => {
     setValue(oneMessage?.text || '');
   }, [oneMessage]);
-
-  const createdDate = `${new Date(oneMessage?.createdAt).toLocaleDateString()} ${new Date(
-    oneMessage?.createdAt,
-  ).toLocaleTimeString()}`;
-  const updatedDate = `${new Date(oneMessage?.updatedAt).toLocaleDateString()} ${new Date(
-    oneMessage?.updatedAt,
-  ).toLocaleTimeString()}`;
-
-  const handleEdit = async () => {
-    const res = await axiosInstance.patch(`/messages/${oneMessage.id}`, { text: value });
-    setOneMessage(res.data);
-    setIsEditing((e) => !e);
-  };
 
   return (
     <Loader isLoading={!oneMessage}>
@@ -62,7 +48,10 @@ export default function MessageInfoPage({ user }) {
               {isEditing ? 'Отменить изменения' : 'Редактировать'}
             </Button>
             {isEditing && (
-              <Button color="success" onClick={handleEdit}>
+              <Button
+                color="success"
+                onClick={() => handleEdit(value).then(() => setIsEditing((e) => !e))}
+              >
                 Сохранить
               </Button>
             )}

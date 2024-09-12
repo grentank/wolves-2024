@@ -1,9 +1,10 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Form } from 'react-router-dom';
 import { Button, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
+import AuthContext from '../../contexts/authContext';
 
-export default function SignupPage({ signupHandler }) {
+export default function SignupPage() {
+  const { signupHandler } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: '',
     name: '',

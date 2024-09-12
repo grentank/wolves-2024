@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Form } from 'react-router-dom';
 import { Button, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
+import AuthContext from '../../contexts/authContext';
 
-export default function LoginPage({ loginHandler }) {
+export default function LoginPage() {
+  const { loginHandler } = useContext(AuthContext);
   const [err, setErr] = useState(null);
   return (
     <Form onSubmit={(e) => loginHandler(e).catch(setErr)}>
