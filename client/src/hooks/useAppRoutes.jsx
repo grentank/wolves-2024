@@ -6,6 +6,7 @@ import LatestMessagesPage from '../components/pages/LatestMessagesPage';
 import MessageInfoPage from '../components/pages/MessageInfoPage';
 import SignupPage from '../components/pages/SignupPage';
 import LoginPage from '../components/pages/LoginPage';
+import EffectPage from '../components/pages/EffectPage';
 
 export default function useAppRoutes(user) {
   return [
@@ -15,6 +16,10 @@ export default function useAppRoutes(user) {
         {
           path: '/',
           element: <MainPage />,
+        },
+        {
+          path: '/effect',
+          element: <EffectPage />,
         },
         {
           element: <ProtectedRoute isAllowed={!!user} redirectPath="/login" />,

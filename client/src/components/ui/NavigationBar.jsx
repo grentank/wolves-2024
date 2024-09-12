@@ -27,6 +27,11 @@ export default function NavigationBar() {
               Главная
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink className="nav-link" to="/effect">
+              useEffect
+            </NavLink>
+          </NavItem>
           {user ? (
             <NavItem>
               <NavLink className="nav-link" to="/latest">

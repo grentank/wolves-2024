@@ -6,7 +6,7 @@ export default function useMessages() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const submitHandler = async (event) => {
+  const submitHandler = async (event) => { // useCallback
     event.preventDefault(); // предотвращение перезагрузки страницы
     const form = event.target;
     const formData = new FormData(form);
@@ -17,7 +17,7 @@ export default function useMessages() {
     try {
       const response = await axiosInstance.post('/messages', dataFromForm);
       const newMessage = response.data; // Получили новые данные с бека
-      setMessages((prev) => [newMessage, ...prev]); // Отобразили их
+      setMessages([newMessage, ...messages]); // Отобразили их
     } catch (error) {
       setError(error);
       const message = error?.response?.data?.text;

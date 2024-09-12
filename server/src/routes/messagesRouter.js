@@ -2,6 +2,7 @@ const express = require('express');
 const { Message, User } = require('../../db/models');
 const verifyAccessToken = require('../middlewares/verifyAccessToken');
 const checkMessageAuthor = require('../middlewares/checkMessageAuthor');
+const { Op } = require('sequelize');
 const messagesRouter = express.Router();
 
 messagesRouter
@@ -43,6 +44,25 @@ messagesRouter
     }
   });
 
+messagesRouter.get('/search', async (req, res) => {
+  try {
+    const { search } = req.query;
+    const messages = await Message.findAll({
+      where: {
+        text: {
+          // Поиск по подстроке
+          [Op.iLike]: `%${search}%`,
+        },
+      },
+      include: { model: User, attributes: ['id', 'name', 'email'] },
+    });
+    res.json(messages);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message, text: 'Ошибка поиска сообщений' });
+  }
+});
+
 // DELETE /api/messages/5
 messagesRouter
   .route('/:messageId')
@@ -79,7 +99,9 @@ messagesRouter
         where: { id: messageId },
         include: { model: User, attributes: ['id', 'name', 'email'] },
       });
-      res.json(message);
+      setTimeout(() => {
+        res.json(message);
+      }, 500 * messageId);
     } catch (error) {
       console.log(error);
       res

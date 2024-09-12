@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import axiosInstance from '../service/axiosInstance';
 
 export default function useOneMessage(messageId) {
-    const [oneMessage, setOneMessage] = useState(null);
+  const [oneMessage, setOneMessage] = useState(null);
 
   useEffect(() => {
-    axiosInstance(`/messages/${messageId}`).then((res) => setOneMessage(res.data));
-  }, []);
+    const controller = new AbortController();
+    const { signal } = controller;
+    axiosInstance(`/messages/${messageId}`, { signal })
+      .then((res) => setOneMessage(res.data))
+      .catch(console.log);
 
-
+    return () => controller.abort();
+  }, [messageId]);
 
   const createdDate = `${new Date(oneMessage?.createdAt).toLocaleDateString()} ${new Date(
     oneMessage?.createdAt,
