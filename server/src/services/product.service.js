@@ -11,6 +11,14 @@ class ProductService {
   getProducts() {
     return this.#models.Product.findAll();
   }
+
+  createProduct(data) {
+    return this.#models.Product.create(data);
+  }
+
+  deleteProduct(id) {
+    return this.#models.Product.destroy({ where: { id } });
+  }
 }
 
 const productService = new ProductService(models);

@@ -12,6 +12,8 @@ export default function productsReducer(
       return [action.payload, ...state];
     case 'REVERSE_ORDER':
       return state.toReversed();
+    case 'DELETE_PRODUCT':
+      return state.filter((product) => product.id !== action.payload);
     default:
       return state;
   }

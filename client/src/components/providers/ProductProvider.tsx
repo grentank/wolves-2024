@@ -1,7 +1,12 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import ProductContext from './ProductContext';
 import productService from '../../services/productService';
-import type { ProductsActionT, ProductT } from '../../schemas/productSchema';
+import { productFormSchema } from '../../schemas/productSchema';
+import type {
+  DeleteProductHandler,
+  ProductsActionT,
+  SubmitProductHandler,
+} from '../../schemas/productSchema';
 import productsReducer from './productsReducer';
 
 type ProductProviderProps = {
@@ -23,8 +28,36 @@ export default function ProductProvider({ children }: ProductProviderProps): JSX
       .catch((err) => err instanceof Error && setError(err?.message))
       .finally(() => setLoading(false));
   }, []);
+
+  /// Описываем обработчики
+  const submitHandler: SubmitProductHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const formData = productFormSchema.parse(
+        Object.fromEntries(new FormData(e.currentTarget)),
+      );
+      const newProduct = await productService.createProduct(formData);
+      const action: ProductsActionT = { type: 'ADD_PRODUCT', payload: newProduct };
+      dispatch(action);
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) setError(err?.message);
+    }
+  };
+  const deleteHandler: DeleteProductHandler = async (productId) => {
+    try {
+      await productService.deleteProduct(productId);
+      const action: ProductsActionT = { type: 'DELETE_PRODUCT', payload: productId };
+      dispatch(action);
+    } catch (err) {
+      if (err instanceof Error) setError(err?.message);
+    }
+  };
   return (
-    <ProductContext.Provider value={{ products, error }}>
+    <ProductContext.Provider
+      // eslint-disable-next-line react/jsx-no-constructed-context-values
+      value={{ products, error, loading, submitHandler, deleteHandler }}
+    >
       {children}
     </ProductContext.Provider>
   );
