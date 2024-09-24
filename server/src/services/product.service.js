@@ -9,7 +9,7 @@ class ProductService {
   }
 
   getProducts() {
-    return this.#models.Product.findAll();
+    return this.#models.Product.findAll({ order: [['id', 'desc']] });
   }
 
   createProduct(data) {

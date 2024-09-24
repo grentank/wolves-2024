@@ -1,11 +1,18 @@
 import React from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { useProducts } from '../providers/ProductContext';
+import { useAppDispatch } from '../providers/redux/hooks';
+import { sendProductFormThunk } from '../providers/redux/slices/productThunks';
 
 export default function AddProductForm(): JSX.Element {
-  const { submitHandler } = useProducts();
+  //   const { submitHandler } = useProducts();
+  const dispatch = useAppDispatch();
   return (
-    <Form onSubmit={(e) => void submitHandler(e)}>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void dispatch(sendProductFormThunk(new FormData(e.currentTarget)));
+      }}
+    >
       <Form.Group className="mb-3" controlId="prod-title">
         <Form.Label>Название</Form.Label>
         <Form.Control name="title" type="text" placeholder="Название товара" />

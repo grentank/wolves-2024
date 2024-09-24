@@ -44,6 +44,8 @@ class ProductService {
     try {
       const response = await this.client.delete(`/products/${id}`);
       if (response.status !== 204) throw new Error('Неверный статус удаления товара');
+      // if (Number.isNaN(Number(response.data))) throw new Error('Неверный формат данных');
+      // return Number(response.data);
     } catch (error) {
       console.log('Ошибка удаления товара в сервисе', error);
       throw error;

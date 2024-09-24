@@ -12,6 +12,8 @@ export const productSchema = z.object({
 
 export type ProductT = z.infer<typeof productSchema>;
 
+export type ProductTExt = ProductT & { isFavorite: boolean };
+
 /// /////////////////////////////////////////////////////
 // Хэндлеры и расширенная типизация
 
@@ -25,24 +27,36 @@ export const productFormSchema = z.object({
 
 export type ProductFormT = z.infer<typeof productFormSchema>;
 
-// Типизация обработчиков
-export type SubmitProductHandler = (
-  event: React.FormEvent<HTMLFormElement>,
-) => Promise<void>;
-
-export type DeleteProductHandler = (productId: ProductT['id']) => Promise<void>;
-
-export type ProductContextValue = {
-  products: ProductT[];
+export type ProductSliceT = {
+  items: ProductT[];
   error: string | null;
   loading: boolean;
-  submitHandler: SubmitProductHandler;
-  deleteHandler: DeleteProductHandler;
+  chosenProduct: ProductT | null;
+  favorites: ProductT[];
+  sort: {
+    key: 'id' | 'price';
+    order: 'asc' | 'desc';
+  };
 };
 
-export type ProductsActionT =
-  | { type: 'SET_PRODUCTS'; payload: ProductT[] }
-  | { type: 'DELETE_PRODUCT'; payload: ProductT['id'] }
-  | { type: 'REVERSE_ORDER' }
-  | { type: 'SORT_BY'; payload: keyof ProductT }
-  | { type: 'ADD_PRODUCT'; payload: ProductT };
+// Типизация обработчиков
+// export type SubmitProductHandler = (
+//   event: React.FormEvent<HTMLFormElement>,
+// ) => Promise<void>;
+
+// export type DeleteProductHandler = (productId: ProductT['id']) => Promise<void>;
+
+// export type ProductContextValue = {
+//   products: ProductT[];
+//   error: string | null;
+//   loading: boolean;
+//   submitHandler: SubmitProductHandler;
+//   deleteHandler: DeleteProductHandler;
+// };
+
+// export type ProductsActionT =
+//   | { type: 'SET_PRODUCTS'; payload: ProductT[] }
+//   | { type: 'DELETE_PRODUCT'; payload: ProductT['id'] }
+//   | { type: 'REVERSE_ORDER' }
+//   | { type: 'SORT_BY'; payload: keyof ProductT }
+//   | { type: 'ADD_PRODUCT'; payload: ProductT };
