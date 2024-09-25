@@ -1,7 +1,7 @@
 import React from 'react';
 import Toast from 'react-bootstrap/Toast';
-import { useAppDispatch, useAppSelector } from '../providers/redux/hooks';
-import { setError } from '../providers/redux/slices/productSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setError } from '../../redux/slices/product/productSlice';
 
 export default function InfoToast(): JSX.Element {
   const error = useAppSelector((store) => store.products.error);

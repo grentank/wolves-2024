@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
 import type { ProductT } from '../../schemas/productSchema';
-import { useAppDispatch } from '../providers/redux/hooks';
-import { deleteProductThunk } from '../providers/redux/slices/productThunks';
+import { useAppDispatch } from '../../redux/hooks';
+import { deleteProductThunk } from '../../redux/slices/product/productThunks';
 
 type ProductCardProps = {
   product: ProductT;
@@ -14,7 +14,9 @@ export default function ProductCard({ product }: ProductCardProps): JSX.Element 
     <Card style={{ width: '18rem' }}>
       <Card.Img variant="top" src={product.image ?? '/images/no-image.png'} />
       <Card.Body>
-        <Card.Subtitle className="mb-2 text-muted">{product.title}</Card.Subtitle>
+        <Card.Subtitle className="mb-2 text-muted">
+          {product.title} - {product.User.name}
+        </Card.Subtitle>
         <Card.Title>{product.price} руб</Card.Title>
         <Card.Text>{product.description ?? 'Описание не добавлено'}</Card.Text>
         <Button

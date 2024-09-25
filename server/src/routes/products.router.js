@@ -1,5 +1,6 @@
 const express = require('express');
 const productService = require('../services/product.service');
+const verifyAccessToken = require('../middlewares/verifyAccessToken');
 
 const productsRouter = express.Router();
 
@@ -14,9 +15,9 @@ productsRouter
       res.status(500).json({ message: error.message, text: 'Ошибка получения товаров' });
     }
   })
-  .post(async (req, res) => {
+  .post(verifyAccessToken, async (req, res) => {
     try {
-      const product = await productService.createProduct(req.body);
+      const product = await productService.createProduct(req.body, res.locals.user.id);
       res.status(201).json(product);
     } catch (error) {
       console.log(error);
@@ -24,10 +25,10 @@ productsRouter
     }
   });
 
-productsRouter.route('/:id').delete(async (req, res) => {
+productsRouter.route('/:id').delete(verifyAccessToken, async (req, res) => {
   try {
     const { id } = req.params;
-    await productService.deleteProduct(id);
+    await productService.deleteProduct(id, res.locals.user.id);
     res.sendStatus(204);
   } catch (error) {
     console.log(error);

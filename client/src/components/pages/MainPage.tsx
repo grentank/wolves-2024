@@ -2,8 +2,8 @@ import React from 'react';
 import { Button, Col, Row, Spinner } from 'react-bootstrap';
 import AddProductForm from '../ui/AddProductForm';
 import ProductCard from '../ui/ProductCard';
-import { useAppDispatch, useAppSelector } from '../providers/redux/hooks';
-import { reverseSort, setSortKey } from '../providers/redux/slices/productSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { reverseSort, setSortKey } from '../../redux/slices/product/productSlice';
 
 export default function MainPage(): JSX.Element {
   // const { products } = useProducts();

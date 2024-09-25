@@ -1,11 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ProductSliceT, ProductT } from '../../../../schemas/productSchema';
-import {
-  deleteProductThunk,
-  loadAllProductsThunk,
-  sendProductFormThunk,
-} from './productThunks';
 
 const initialState: ProductSliceT = {
   items: [],
@@ -34,7 +28,7 @@ export const productSlice = createSlice({
         order: 'desc',
       };
     },
-    setSortKey:  (state, action: PayloadAction<'id' | 'price'>) => {
+    setSortKey: (state, action: PayloadAction<'id' | 'price'>) => {
       state.sort.key = action.payload;
     },
     setChosenProduct: (state, action: PayloadAction<ProductT>) => {
@@ -77,7 +71,13 @@ export const productSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { reverseSort, setSortKey, resetSort, setChosenProduct, addToFavorites, setError } =
-  productSlice.actions;
+export const {
+  reverseSort,
+  setSortKey,
+  resetSort,
+  setChosenProduct,
+  addToFavorites,
+  setError,
+} = productSlice.actions;
 
 export default productSlice.reducer;

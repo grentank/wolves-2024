@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { useAppDispatch } from '../providers/redux/hooks';
-import { sendProductFormThunk } from '../providers/redux/slices/productThunks';
+import { useAppDispatch } from '../../redux/hooks';
+import { sendProductFormThunk } from '../../redux/slices/product/productThunks';
 
 export default function AddProductForm(): JSX.Element {
   //   const { submitHandler } = useProducts();

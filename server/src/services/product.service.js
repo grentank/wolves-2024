@@ -9,15 +9,27 @@ class ProductService {
   }
 
   getProducts() {
-    return this.#models.Product.findAll({ order: [['id', 'desc']] });
+    return this.#models.Product.findAll({
+      order: [['id', 'desc']],
+      include: this.#models.User,
+    });
   }
 
-  createProduct(data) {
-    return this.#models.Product.create(data);
+  async createProduct(data, userId) {
+    const newProd = await this.#models.Product.create({ ...data, userId });
+    const newProdWithUser = await this.#models.Product.findByPk(newProd.id, {
+      include: this.#models.User,
+    });
+    return newProdWithUser;
   }
 
-  deleteProduct(id) {
-    return this.#models.Product.destroy({ where: { id } });
+  async deleteProduct(productId, userWhoTriesToDeleteId) {
+    const res = await this.#models.Product.destroy({
+      where: { id: productId, userId: userWhoTriesToDeleteId },
+    });
+    if (res === 0) throw new Error('Действие запрещено');
+    if (res === 1) return true;
+    throw new Error('Что-то пошло не так');
   }
 }
 

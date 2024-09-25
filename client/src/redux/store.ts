@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import productReducer from './slices/productSlice';
+import productReducer from './slices/product/productSlice';
+import authReducer from './slices/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
     products: productReducer,
+    auth: authReducer,
   },
 });
 
@@ -11,3 +13,4 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
+export type AppStore = typeof store;

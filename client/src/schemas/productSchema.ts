@@ -1,5 +1,6 @@
 import type React from 'react';
 import { z } from 'zod';
+import { userDataSchema } from './authSchema';
 
 export const productSchema = z.object({
   id: z.number(),
@@ -8,6 +9,7 @@ export const productSchema = z.object({
   image: z.string().nullable(),
   price: z.number(),
   createdAt: z.string().datetime(),
+  User: userDataSchema
 });
 
 export type ProductT = z.infer<typeof productSchema>;
