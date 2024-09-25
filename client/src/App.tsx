@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/pages/Layout';
 import MainPage from './components/pages/MainPage';
@@ -14,17 +14,15 @@ function App(): JSX.Element {
   const dispatch = useAppDispatch();
   const status = useAppSelector((store) => store.auth.user.status);
 
-  // useEffect(() => {
-  //   void dispatch(loadAllProductsThunk());
-  //   // void dispatch(checkAuthThunk());
-  // }, []);
+  useEffect(() => {
+    void dispatch(loadAllProductsThunk());
+    void dispatch(checkAuthThunk());
+  }, []);
 
   const router = createBrowserRouter([
     {
       element: <Layout />,
       errorElement: <h1>404</h1>,
-      loader: () =>
-        Promise.all([dispatch(loadAllProductsThunk()), dispatch(checkAuthThunk())]),
       children: [
         {
           path: '/',

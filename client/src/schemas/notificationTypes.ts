@@ -3,9 +3,14 @@ export type NotificationState = {
     open: boolean;
     text: string;
   };
-  toast: {
-    show: boolean;
-    text: string;
-    type: 'info' | 'danger' | 'success' | 'warning';
-  };
+  toasts: ToastT[];
 };
+
+export type ToastT = {
+  id: number;
+  show: boolean;
+  text: string;
+  type: ClassVariant;
+};
+
+export type ClassVariant = 'info' | 'danger' | 'success' | 'warning';

@@ -1,30 +1,34 @@
 import React from 'react';
 import Toast from 'react-bootstrap/Toast';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setError } from '../../redux/slices/product/productSlice';
+import type { ToastT } from '../../schemas/notificationTypes';
+import { hideToast } from '../../redux/slices/notification/notificationSlice';
 
-export default function InfoToast(): JSX.Element {
-  const error = useAppSelector((store) => store.products.error);
+type InfoToastProps = {
+  toast: ToastT;
+};
+
+export default function InfoToast({ toast }: InfoToastProps): JSX.Element {
   const dispatch = useAppDispatch();
   return (
     <Toast
       style={{
-        position: 'absolute',
+        // position: 'absolute',
         top: 20,
         right: 20,
-        zIndex: 1060,
+        // zIndex: 1060,
       }}
-      onClose={() => dispatch(setError(null))}
-      show={!!error}
+      onClose={() => dispatch(hideToast(toast.id))}
+      show={toast.show}
       delay={3000}
       autohide
-      bg="danger"
+      bg={toast.type}
     >
       <Toast.Header>
-        <strong className="me-auto">Ошибка</strong>
+        <strong className="me-auto">{toast.type}</strong>
         <small>Только что</small>
       </Toast.Header>
-      <Toast.Body className="text-white">{error || 'Неизвестная ошибка'}</Toast.Body>
+      <Toast.Body className="text-white">{toast.text}</Toast.Body>
     </Toast>
   );
 }

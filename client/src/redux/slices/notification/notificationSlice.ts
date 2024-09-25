@@ -1,83 +1,48 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { ClassVariant, NotificationState } from '../../../schemas/notificationTypes';
 
-const initialState: ProductSliceT = {
-  items: [],
-  error: null,
-  loading: true,
-  favorites: [],
-  chosenProduct: null,
-  sort: {
-    key: 'id',
-    order: 'desc',
+const initialState: NotificationState = {
+  modal: {
+    open: false,
+    text: '',
   },
+  toasts: [],
 };
 
-export const productSlice = createSlice({
-  name: 'product',
+export const notificationSlice = createSlice({
+  name: 'notification',
   initialState,
   reducers: {
-    reverseSort: (state) => {
-      if (state.sort.order === 'asc') state.sort.order = 'desc';
-      else state.sort.order = 'asc';
-      //   state.sort.order = state.sort.order === 'asc' ? 'desc' : 'asc';
-    },
-    resetSort: (state) => {
-      state.sort = {
-        key: 'id',
-        order: 'desc',
+    openModal: (state, action: PayloadAction<string>) => {
+      state.modal = {
+        open: true,
+        text: action.payload,
       };
     },
-    setSortKey: (state, action: PayloadAction<'id' | 'price'>) => {
-      state.sort.key = action.payload;
+    closeModal: (state) => {
+      state.modal = {
+        open: false,
+        text: '',
+      };
     },
-    setChosenProduct: (state, action: PayloadAction<ProductT>) => {
-      state.chosenProduct = action.payload;
+    addToast: (state, action: PayloadAction<{ type: ClassVariant; text: string }>) => {
+      const { type, text } = action.payload;
+      state.toasts.push({ type, text, id: Math.random(), show: true });
     },
-    addToFavorites: (state, action: PayloadAction<ProductT>) => {
-      const indexInFavs = state.favorites.findIndex(
-        (item) => item.id === action.payload.id,
-      );
-      if (indexInFavs === -1) state.favorites.unshift(action.payload);
-      else state.favorites.splice(indexInFavs, 1);
+    hideToast: (state, action: PayloadAction<number>) => {
+      // const targetToast = state.toasts.find((t) => t.id === action.payload);
+      // if (targetToast) targetToast.show = false;
+      state.toasts = state.toasts.filter((toast) => toast.id !== action.payload);
     },
-    setError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
+    removeToast: (state, action: PayloadAction<number>) => {
+      state.toasts = state.toasts.filter((toast) => toast.id !== action.payload);
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(loadAllProductsThunk.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.loading = false;
-      })
-      .addCase(loadAllProductsThunk.rejected, (state) => {
-        state.error = 'Ошибка подгрузки товаров';
-        state.loading = false;
-      })
-      .addCase(sendProductFormThunk.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
-      })
-      .addCase(sendProductFormThunk.rejected, (state) => {
-        state.error = 'Ошибка добавления товара';
-      })
-      .addCase(deleteProductThunk.fulfilled, (state, action) => {
-        state.items = state.items.filter((p) => p.id !== action.payload);
-      })
-      .addCase(deleteProductThunk.rejected, (state) => {
-        state.error = `Ошибка удаления товара`;
-      });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  reverseSort,
-  setSortKey,
-  resetSort,
-  setChosenProduct,
-  addToFavorites,
-  setError,
-} = productSlice.actions;
+export const { openModal, closeModal, addToast, hideToast, removeToast } =
+  notificationSlice.actions;
 
-export default productSlice.reducer;
+export default notificationSlice.reducer;
