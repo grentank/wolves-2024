@@ -45,6 +45,7 @@ function App(): JSX.Element {
       ],
     },
   ]);
+  if (status === UserStatusEnum.pending) return <h1>Loading...</h1>;
   return <RouterProvider router={router} />;
 }
 

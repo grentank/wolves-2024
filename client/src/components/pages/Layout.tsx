@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import InfoToast from '../ui/InfoToast';
 import Navigation from '../ui/Navigation';
 import { useAppSelector } from '../../redux/hooks';
+import ProductModal from '../ui/ProductModal';
 
 export default function Layout(): JSX.Element {
   const toasts = useAppSelector((store) => store.notification.toasts);
@@ -33,6 +34,7 @@ export default function Layout(): JSX.Element {
           <InfoToast toast={toast} key={toast.id} />
         ))}
       </div>
+      <ProductModal />
     </Container>
   );
 }

@@ -33,6 +33,7 @@ export type ProductSliceT = {
   items: ProductT[];
   error: string | null;
   loading: boolean;
+  isOpenProductModal: boolean;
   chosenProduct: ProductT | null;
   favorites: ProductT[];
   sort: {

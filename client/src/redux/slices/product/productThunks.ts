@@ -23,3 +23,11 @@ export const deleteProductThunk = createAsyncThunk(
     return productId;
   },
 );
+
+export const editProductThunk = createAsyncThunk(
+  'products/editProductThunk',
+  async ({ id, formData }: { id: number; formData: FormData }) => {
+    const newProduct = await productService.editProduct(id, formData);
+    return newProduct;
+  },
+);

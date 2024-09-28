@@ -25,10 +25,10 @@ productsRouter
     }
   });
 
-productsRouter.route('/:id').delete(verifyAccessToken, async (req, res) => {
+productsRouter.route('/:id').delete(async (req, res) => {
   try {
     const { id } = req.params;
-    await productService.deleteProduct(id, res.locals.user.id);
+    await productService.deleteProduct(id, 3);
     res.sendStatus(204);
   } catch (error) {
     console.log(error);

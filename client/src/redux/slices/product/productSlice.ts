@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ProductSliceT, ProductT } from '../../../schemas/productSchema';
 import {
   deleteProductThunk,
+  editProductThunk,
   loadAllProductsThunk,
   sendProductFormThunk,
 } from './productThunks';
@@ -11,6 +12,7 @@ const initialState: ProductSliceT = {
   items: [],
   error: null,
   loading: true,
+  isOpenProductModal: false,
   favorites: [],
   chosenProduct: null,
   sort: {
@@ -23,6 +25,14 @@ export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
+    openProductModal: (state, action: PayloadAction<ProductT | undefined>) => {
+      if (action.payload) state.chosenProduct = action.payload;
+      state.isOpenProductModal = true;
+    },
+    closeProductModal: (state) => {
+      state.isOpenProductModal = false;
+      state.chosenProduct = null;
+    },
     reverseSort: (state) => {
       if (state.sort.order === 'asc') state.sort.order = 'desc';
       else state.sort.order = 'asc';
@@ -72,6 +82,11 @@ export const productSlice = createSlice({
       })
       .addCase(deleteProductThunk.rejected, (state) => {
         state.error = `Ошибка удаления товара`;
+      })
+      .addCase(editProductThunk.fulfilled, (state, action) => {
+        const targetIndex = state.items.findIndex((p) => p.id === action.payload.id);
+        if (targetIndex === -1) return;
+        state.items[targetIndex] = action.payload;
       });
   },
 });
@@ -84,6 +99,8 @@ export const {
   setChosenProduct,
   addToFavorites,
   setError,
+  openProductModal,
+  closeProductModal,
 } = productSlice.actions;
 
 export default productSlice.reducer;

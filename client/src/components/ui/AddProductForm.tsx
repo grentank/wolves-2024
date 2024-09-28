@@ -3,9 +3,10 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useAppDispatch } from '../../redux/hooks';
 import { sendProductFormThunk } from '../../redux/slices/product/productThunks';
 
-export default function AddProductForm(): JSX.Element {
+function AddProductForm(): JSX.Element {
   //   const { submitHandler } = useProducts();
   const dispatch = useAppDispatch();
+  console.log('Form render');
   return (
     <Form
       onSubmit={(e) => {
@@ -46,3 +47,5 @@ export default function AddProductForm(): JSX.Element {
     </Form>
   );
 }
+
+export default React.memo(AddProductForm);

@@ -31,18 +31,12 @@ export const notificationSlice = createSlice({
       state.toasts.push({ type, text, id: Math.random(), show: true });
     },
     hideToast: (state, action: PayloadAction<number>) => {
-      // const targetToast = state.toasts.find((t) => t.id === action.payload);
-      // if (targetToast) targetToast.show = false;
-      state.toasts = state.toasts.filter((toast) => toast.id !== action.payload);
-    },
-    removeToast: (state, action: PayloadAction<number>) => {
       state.toasts = state.toasts.filter((toast) => toast.id !== action.payload);
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { openModal, closeModal, addToast, hideToast, removeToast } =
-  notificationSlice.actions;
+export const { openModal, closeModal, addToast, hideToast } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

@@ -51,6 +51,25 @@ class ProductService {
       throw error;
     }
   }
+
+  async editProduct(id: ProductT['id'], formData: FormData): Promise<ProductT> {
+    try {
+      const response = await this.client.patch(
+        `/products/${id}`,
+        Object.fromEntries(formData),
+      );
+      if (response.status !== 200)
+        throw new Error('Неверный статус редактирования товара');
+      return productSchema.parse(response.data);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.log('ZOD ERROR', error.issues);
+      } else {
+        console.log('Ошибка редактирования товара в сервисе', error);
+      }
+      return Promise.reject(error);
+    }
+  }
 }
 
 const productService = new ProductService(axiosInstance);

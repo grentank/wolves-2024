@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import ProductContext from './ProductContext';
 import productService from '../../services/productService';
 import { productFormSchema } from '../../schemas/productSchema';
@@ -30,7 +30,7 @@ export default function ProductProvider({ children }: ProductProviderProps): JSX
   }, []);
 
   /// Описываем обработчики
-  const submitHandler: SubmitProductHandler = async (e) => {
+  const submitHandler: SubmitProductHandler = useCallback(async (e) => {
     try {
       e.preventDefault();
       const formData = productFormSchema.parse(
@@ -43,7 +43,7 @@ export default function ProductProvider({ children }: ProductProviderProps): JSX
       console.log(err);
       if (err instanceof Error) setError(err?.message);
     }
-  };
+  }, []);
   const deleteHandler: DeleteProductHandler = async (productId) => {
     try {
       await productService.deleteProduct(productId);
